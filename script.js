@@ -1,32 +1,58 @@
-const DIMENSION = 750;
+const DIMENSION = 500;
 const grid = document.querySelector(".grid")
-let numberOfBoxes = 24;
 
-let box;
-for (let i = 0; i < numberOfBoxes ** 2; i++)
+function createGrid(sideLength) 
 {
-    box = document.createElement("div");
-    box.classList.add("box");
-    box.style.height = `${DIMENSION / 24}px`;
-    box.style.width = `${DIMENSION / 24}px`;
-    if (i % 24 === 0)
+    let box, line, i, j;
+    grid.replaceChildren();
+    
+    for (i = 0; i < sideLength; i++)
     {
-        grid.appendChild(document.createElement("br"));
-        box.style.borderLeftWidth = "1px";
+        line = document.createElement("div");
+        line.classList.add("row");
+        line.setAttribute("draggable", "false");
+        const boxDimensions = DIMENSION / sideLength;
+        for (j = 0; j < sideLength; j++)
+        {
+            box = document.createElement("div");
+            box.classList.add("box");
+            box.style.height = `${boxDimensions}px`;
+            box.style.width = `${boxDimensions}px`;     
+            box.setAttribute("draggable", "false")
+            if (j === 0)
+            {
+                box.style.borderLeftWidth = "1px";
+            }
+            
+            if (i === 0)
+            {
+                box.style.borderTopWidth = "1px";
+            }
+            
+            line.appendChild(box);
+            
+        }
+        grid.appendChild(line);
+                   
     }
-    if (i < 24)
-    {
-        box.style.borderTopWidth = "1px";
-    }
-    grid.appendChild(box);               
+    const boxes = document.querySelectorAll(".box");
+    
+    boxes.forEach(element => {
+        element.addEventListener("mouseover", (e) => {
+            // Checks that left mouse button is down    
+            console.log(e)
+            if (e.buttons === 1) e.target.style.backgroundColor = "black";
+        });
+
+    });  
+      
 }
 
-const boxes = document.querySelectorAll(".box");
-boxes.forEach(element => {
-    element.addEventListener("mouseover", (e) => {
-        // Checks that left mouse button is down
-        if (e.buttons === 1) e.target.style.backgroundColor = "black";
-    });
-});
+createGrid(10);
+
+
+
+const slider = document.querySelector(".slider");
+slider.addEventListener("change", () => createGrid(parseInt(slider.value)))
 
    

@@ -1,22 +1,53 @@
+* {
+	overflow: hidden;
+}
+
 .box {
 	border-color: grey;
 	border-style: solid;
-	border-top-width: 0;
+	
+	border-top-width: 0px;
 	border-bottom-width: 1px;
 	border-right-width: 1px;
 	border-left-width: 0;
-	display: inline-block;
-	margin-top: -4px;
+ 	display: inline-block;
+	background-color: white;
 }
 
-body, section {
+
+.row {
+	/* remove lines underneath each row */
+	line-height: 0;
+}
+
+body{
 	min-height: 100vh;
+	margin: 0;
+	overflow: hidden;
 }
 
 .grid {
-	padding: 25px;
+	/* Padding adjusted for .box negative margin-top */
+	padding: 29px 25px 21px;
+	background-color: grey;
+	border-radius: 5px;
 }
 
+h1 {
+	text-align: center;
+	margin: 50px 0;
+}
+
+.main {
+	display: flex;
+	gap: 200px;
+	justify-content: center;
+}
+
+.settings {
+	background-color: grey;
+	padding: 25px;
+}
 
 
 
