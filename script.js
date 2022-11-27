@@ -1,5 +1,6 @@
 const DIMENSION = 500;
-const grid = document.querySelector(".grid")
+const grid = document.querySelector(".grid");
+
 
 function createGrid(sideLength) 
 {
@@ -40,16 +41,18 @@ function createGrid(sideLength)
     boxes.forEach(element => {
         element.addEventListener("mouseover", (e) => {
             // Checks that left mouse button is down    
-            console.log(e)
             if (e.buttons === 1) e.target.style.backgroundColor = "black";
         });
-
+        element.addEventListener("dragstart", e => {
+            console.log(e);
+            // Stops the drag function
+            e.preventDefault();
+        })
     });  
       
 }
 
 createGrid(10);
-
 
 
 const slider = document.querySelector(".slider");
