@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="en" draggable="false">
+<html lang="en">
 	<head>
 		<meta charset="UTF-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,14 +10,34 @@
 		<title>Etch-A-Sketch</title>
 	</head>
     <!-- Prevents the cursor from switching to drag mode.-->
-	<body draggable="false">
-		<h1 draggable="false">Retro Sketch</h1>
-		<div class="main" draggable="false">
+	<body >
+		<h1 >Retro Sketch</h1>
+		<div class="main">
 			<div class="settings">
-				<input type="range" min="1" max="50" value="50" class="slider">
+                <div class="colorSelector">
+                    <input type="color" class="penColor">
+                    <span class="textColor">Pen Color</span>
+                </div>
+                <div class="backgroundSelector">
+                    <input type="color" class="backgroundColor">
+                    <span class="textColor">Background Color</span>
+                </div>               
+                <button type="button" class="fill">Color Fill</button>
+                <button type="button" class="grabber">Color Grabber</button>
+                <button type="button" class="eraser">Toggle Eraser</button>
+                <button type="button" class="rainbow">Toggle Rainbow</button>
+                <button type="button" class="shading">Toggle Shading</button>
+                <button type="button" class="lighten">Toggle Lighten</button>
+                <input type="range" min="1" max="50" value="10" class="slider">
+                <p class="sliderValue">Grid size: 10 x 10</p>
+                <button type="button" class="lines">Toggle Grid Lines</button>
+                <button type="button" class="clear">Clear</button>
 			</div>
 			<!-- not draggable to -->
-			<div class="grid" draggable="false"></div>	
+            <div class="gridEdge">
+                <div class="grid"></div>
+            </div>
+				
 		</div>
 	</body>
 </html>
