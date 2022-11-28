@@ -93,7 +93,12 @@ function hexaToDecimal(color, fn) {
 
 function rgbToHexa(rgb)
 {
-    const decimal = rgbToDecimal(rgb, i => i.toString(16).trim());
+    console.log(rgb)
+    const decimal = rgbToDecimal(rgb, i => {
+        let decimalString = parseInt(i).toString(16).trim();
+        return (decimalString.length === 1) ? "0" + decimalString : decimalString;
+    });
+    console.log(decimal);
     return "#" + decimal.join("");
 }
 
@@ -111,6 +116,7 @@ function createGrid(sideLength)
             box.classList.add("box");
             box.setAttribute("shade", 1);
             box.setAttribute("color", grid.style.backgroundColor);
+            box.style.backgroundColor = grid.style.backgroundColor;
             if (gridLinesOn) box.classList.add("boxBorder");
             if (j === 0) box.style.borderLeftWidth = "1px";
             if (i === 0) box.style.borderTopWidth = "1px";         
@@ -130,7 +136,7 @@ function createGrid(sideLength)
                     fillOn = 0;
                 }
                 else if (grabberOn) {
-                    let newColor = rgbToHexa(box.style.backgroundColor);
+                    let newColor = rgbToHexa(e.target.style.backgroundColor);
                     if (newColor == "#") newColor = "#ffffff";
                     penColorSelect.value = newColor;
                     grabber.classList.toggle("buttonActive");
