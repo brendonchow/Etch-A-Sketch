@@ -28,7 +28,7 @@ function defaultFunc(box) {
 }
 
 function eraserFunc(box) {
-    box.style.backgroundColor = grid.style.backgroundColor;
+    box.style.removeProperty("background-color");
     box.setAttribute("color", grid.style.backgroundColor);
     box.setAttribute("shade", "1");
 }
@@ -48,9 +48,8 @@ function shadingFunc(box) {
         box.setAttribute("color", box.style.backgroundColor);
     } else shading -= 0.1;
     box.setAttribute("shade", shading);
-
-    let newColor = rgbaToDecimal(box.getAttribute("color"), shading).map((i) => parseFloat(i) * shading)
-    box.style.background = decimalToRgba(newColor);    
+    let newColor = rgbToDecimal(box.getAttribute("color"), i => parseInt(i) * shading);
+    box.style.background = arrayToRGBA(newColor);    
 }
 
 function lightenFunc(box) {
@@ -62,19 +61,19 @@ function lightenFunc(box) {
     } else shading += 0.1;
     box.setAttribute("shade", shading);
 
-    let newColor = rgbaToDecimal(box.getAttribute("color"), shading).map((i) => {
-        i = parseFloat(i);
+    let newColor = rgbToDecimal(box.getAttribute("color"), i => {
+        i = parseInt(i);
         return (255 - i) * (shading - 1) + i;
-    })
-    box.style.background = decimalToRgba(newColor);
+    });
+    box.style.background = arrayToRGBA(newColor);
 }
 
-function rgbaToDecimal(color, shading) {
-    return color.slice(4, color.length - 1).split(", ");
+function rgbToDecimal(color, fn) {
+    return color.slice(4, color.length - 1).split(",").map(fn);
 }
 
-function decimalToRgba(color) {
-    return `rgba(${color[0]}, ${color[1]}, ${color[2]})`
+function arrayToRGBA(color) {
+    return `rgb(${color[0]},${color[1]},${color[2]})`
 }
 
 function createGrid(sideLength) 
@@ -114,42 +113,64 @@ function createGrid(sideLength)
 
 createGrid(10);
 
-
-
 slider.addEventListener("change", e => {
     sliderValue.textContent = `Grid size: ${e.target.value} x ${e.target.value}`;
     createGrid(e.target.value);
 });
 
-
+let count;
 // input event listener so color dynamically changes depending on cursor
-backgroundColor.addEventListener("input", e => grid.style.backgroundColor = e.target.value);
+backgroundColor.addEventListener("input", e => {
+    const currentRgb = arrayToRGBA(hexaToDecimal(e.target.value, i => i));
+    grid.style.backgroundColor = currentRgb;
+    count = 0;
+    boxes.forEach(box => {
+        let shade = parseFloat(box.getAttribute("shade"));
+        let newColor;
+        if (shade <= 1) {
+            newColor = hexaToDecimal(e.target.value, i => i * shade);
+        } else {
+            newColor = hexaToDecimal(e.target.value, i => (255 - i) * (shade - 1) + i);
+        }
+        newColor = arrayToRGBA(newColor);
+        box.setAttribute("color", currentRgb);
+        box.style.backgroundColor = newColor;       
+    });
+});
+
+function hexaToDecimal(color, fn) {
+    const rgb = [];
+    for (let i = 1; i < 7; i += 2) {
+        rgb.push(parseInt(color.substr(i, 2), 16));
+    }
+    return rgb.map(fn);
+}
 
 
 clear.addEventListener("click", () => {
-    boxes.forEach(box => box.style.backgroundColor = "");
-})
+    boxes.forEach(box => {
+        box.style.removeProperty("background-color");
+        box.setAttribute("color", grid.style.backgroundColor);
+        box.setAttribute("shade", "1");
+    });
+});
 
-
-penColorSelect.addEventListener("input", e => penColor = e.target.value);
+penColorSelect.addEventListener("input", e => penColor = arrayToRGBA(hexaToDecimal(e.target.value, i => i)));
 
 gridLines.addEventListener("click", () => {
-    // .style only has access to inline styles
     gridLines.classList.toggle("buttonActive");
     boxes.forEach(box =>  {
         box.classList.toggle("boxBorder");
-    })
+    });
 });
 
 eraser.addEventListener("click", () => {
     toggleRadio(eraser, 0);
 })
 
-
 rainbow.addEventListener("click", () => {
     toggleRadio(rainbow, 1);
 })
-
 
 shading.addEventListener("click", () => {
     toggleRadio(shading, 2)
@@ -164,8 +185,9 @@ function toggleRadio(button, selfArrayIndex)
     if (selfArrayIndex === currentMode) {
         currentMode = 4;
     } else {
-        if (currentMode !== 4) modes[currentMode][1].classList.toggle("buttonActive")
-        currentMode = selfArrayIndex
+        // Finds the button active beforehand and toggle it off if mode was not default
+        if (currentMode !== 4) modes[currentMode][1].classList.toggle("buttonActive");
+        currentMode = selfArrayIndex;
     }
     button.classList.toggle("buttonActive");
 }
