@@ -1,12 +1,54 @@
 const grid = document.querySelector(".grid");
-grid.style.backgroundColor = "white";
+grid.style.backgroundColor = "#ffffff";
 let boxes;
-let penColor = "black";
+let penColor = "#000000";
 let gridLinesOn = 1;
-let eraserOn = 0;
-let rainbowOn = 0;
-const rainbowColors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+const rainbowColors = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#9400D3"];
 
+const slider = document.querySelector(".slider");
+const sliderValue = document.querySelector(".sliderValue")
+const backgroundColor = document.querySelector(".backgroundColor");
+const clear = document.querySelector(".clear");
+const penColorSelect = document.querySelector(".penColor");
+const gridLines = document.querySelector(".lines");
+const rainbow = document.querySelector(".rainbow");
+const shading = document.querySelector(".shading");
+const eraser = document.querySelector(".eraser");
+const lighten = document.querySelector(".lighten")
+
+const modes = [[eraserFunc, eraser], [rainbowFunc, rainbow], [shadingFunc, shading], [lightenFunc], [defaultFunc]]
+let currentMode = 4;
+
+function eraserFunc(box) {
+    box.style.backgroundColor = "";
+}
+
+function rainbowFunc(box) {
+    box.style.backgroundColor = rainbowColors[Math.floor(Math.random() * 7)];
+}
+
+function shadingFunc(box) {
+    changeShading(box, 0.9)
+}
+
+function lightenFunc(box) {
+    changeShading(box, 1.1)
+}
+
+function changeShading(box, percent)
+{
+    let currentColor = box.style.backgroundColor;
+    if (!currentColor) {
+        currentColor = grid.style.backgroundColor;
+    }
+    let newColor;
+    newColor = currentColor.slice(4, currentColor.length - 1).split(", ").map((i) => i * percent);
+    box.style.background = `rgba(${newColor[0]}, ${newColor[1]}, ${newColor[2]})`;
+}
+
+function defaultFunc(box) {
+    box.style.backgroundColor = penColor;
+}
 function createGrid(sideLength) 
 {
     let box, line, i, j;
@@ -30,13 +72,7 @@ function createGrid(sideLength)
     boxes = document.querySelectorAll(".box");
     function colorBox(box)
     {
-        if (eraserOn) box.style.backgroundColor = "";
-        else if (rainbowOn) {
-            //const rgb = Math.floor(Math.random() * 16777215);
-            //box.style.backgroundColor = `#${rgb}`;
-            box.style.backgroundColor = rainbowColors[Math.floor(Math.random() * 7)];
-        }
-        else box.style.backgroundColor = penColor;
+        modes[currentMode][0](box);
     }
 
     boxes.forEach(element => {
@@ -54,46 +90,59 @@ function createGrid(sideLength)
 createGrid(10);
 
 
-const slider = document.querySelector(".slider");
-const sliderValue = document.querySelector(".sliderValue")
+
 slider.addEventListener("change", e => {
     sliderValue.textContent = `Grid size: ${e.target.value} x ${e.target.value}`;
     createGrid(e.target.value);
 });
 
-const backgroundColor = document.querySelector(".backgroundColor");
+
 // input event listener so color dynamically changes depending on cursor
 backgroundColor.addEventListener("input", e => grid.style.backgroundColor = e.target.value);
 
-const clear = document.querySelector(".clear");
+
 clear.addEventListener("click", () => {
     boxes.forEach(box => box.style.backgroundColor = "");
 })
 
-const penColorSelect = document.querySelector(".penColor");
+
 penColorSelect.addEventListener("input", e => penColor = e.target.value);
 
-const gridLines = document.querySelector(".lines");
 gridLines.addEventListener("click", () => {
     // .style only has access to inline styles
     gridLines.classList.toggle("buttonActive");
-    gridLinesOn ^= 1;
     boxes.forEach(box =>  {
         box.classList.toggle("boxBorder");
     })
 });
 
-const eraser = document.querySelector(".eraser")
 eraser.addEventListener("click", () => {
-    eraser.classList.toggle("buttonActive");
-    eraserOn ^= 1;
+    toggleButtons(eraser, 0);
 })
 
-const rainbow = document.querySelector(".rainbow");
+
 rainbow.addEventListener("click", () => {
-    rainbow.classList.toggle("buttonActive");
-    rainbowOn ^= 1;
+    toggleButtons(rainbow, 1);
 })
+
+
+shading.addEventListener("click", () => {
+    toggleButtons(shading, 2)
+})
+
+
+
+function toggleButtons(button, selfArrayIndex)
+{
+    console.log(button, selfArrayIndex);
+    if (selfArrayIndex === currentMode) {
+        currentMode = 4;
+    } else {
+        if (currentMode !== 4) modes[currentMode][1].classList.toggle("buttonActive")
+        currentMode = selfArrayIndex
+    }
+    button.classList.toggle("buttonActive");
+}
 
 
     
