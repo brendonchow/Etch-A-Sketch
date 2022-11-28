@@ -21,7 +21,8 @@ const lighten = document.querySelector(".lighten");
 const fill = document.querySelector(".fill");
 let fillOn = 0;
 
-
+const grabber = document.querySelector(".grabber");
+let grabberOn = 0;
 
 const modes = [[eraserFunc, eraser], [rainbowFunc, rainbow], [shadingFunc, shading], [lightenFunc, lighten], [defaultFunc]]
 
@@ -92,8 +93,7 @@ function hexaToDecimal(color, fn) {
 
 function rgbToHexa(rgb)
 {
-    console.log(rgb);
-    const decimal = rgbToDecimal(rgb, i => i.toString(16));
+    const decimal = rgbToDecimal(rgb, i => i.toString(16).trim());
     return "#" + decimal.join("");
 }
 
@@ -127,9 +127,16 @@ function createGrid(sideLength)
                 if (fillOn) {
                     fillBackground(penColor);
                     fill.classList.toggle("buttonActive");
-                    fillOn ^= 1;
+                    fillOn = 0;
                 }
-                else if (e.buttons === 1) modes[currentMode][0](e.target);
+                else if (grabberOn) {
+                    let newColor = rgbToHexa(box.style.backgroundColor);
+                    if (newColor == "#") newColor = "#ffffff";
+                    penColorSelect.value = newColor;
+                    grabber.classList.toggle("buttonActive");
+                    grabberOn = 0;
+                }
+                else modes[currentMode][0](e.target);
             }
         });        
         element.addEventListener("mouseover", (e) => {
@@ -232,10 +239,21 @@ function toggleRadio(button, selfArrayIndex)
     button.classList.toggle("buttonActive");
 }
 
-fill.addEventListener("click", () => {
+fill.addEventListener("click", () => turnFill(fill, grabber));
+
+grabber.addEventListener("click", () => turnGrabber(grabber, fill))
+
+function turnGrabber(grabber, fill) {
+    grabberOn ^= 1;
+    grabber.classList.toggle("buttonActive");
+    if (grabberOn === 1 && fillOn === 1) turnFill(fill, grabber);
+}
+
+function turnFill(fill, grabber) {
     fillOn ^= 1;
     fill.classList.toggle("buttonActive");
-});
+    if (grabberOn === 1 && fillOn === 1) turnGrabber(grabber, fill);
+}
 
 
 
