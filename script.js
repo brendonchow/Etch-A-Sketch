@@ -1,9 +1,9 @@
 const grid = document.querySelector(".grid");
 grid.style.backgroundColor = "white";
 let boxes;
-const coloredBoxes = [];
 let penColor = "black";
 let gridLinesOn = 1;
+let eraserOn = 0;
 
 function createGrid(sideLength) 
 {
@@ -17,7 +17,7 @@ function createGrid(sideLength)
         {
             box = document.createElement("div");
             box.classList.add("box");
-            box.classList.add("boxBorder");
+            if (gridLinesOn) box.classList.add("boxBorder");
             if (j === 0) box.style.borderLeftWidth = "1px";
             if (i === 0) box.style.borderTopWidth = "1px";         
             line.appendChild(box);
@@ -26,14 +26,19 @@ function createGrid(sideLength)
                    
     }
     boxes = document.querySelectorAll(".box");
-    
+    function colorBox(box)
+    {
+        if (!eraserOn) box.style.backgroundColor = penColor;
+        else box.style.backgroundColor = "";
+    }
+
     boxes.forEach(element => {
         element.addEventListener("mouseover", (e) => {
             // Checks that left mouse button is down
-            if (e.buttons === 1) e.target.style.backgroundColor = penColor;
+            if (e.buttons === 1) colorBox(e.target);
         });
         element.addEventListener("mousedown", (e) => {
-            if (e.buttons === 1) e.target.style.backgroundColor = penColor;
+            if (e.buttons === 1) colorBox(e.target);
         })
     });  
       
@@ -64,9 +69,24 @@ penColorSelect.addEventListener("input", e => penColor = e.target.value);
 const gridLines = document.querySelector(".lines");
 gridLines.addEventListener("click", () => {
     // .style only has access to inline styles
-    if (gridLinesOn === 1) boxes.forEach(box => box.classList.remove("boxBorder"));
-    else boxes.forEach(box => box.classList.add("boxBorder"));
+    gridLines.classList.toggle("buttonActive");
     gridLinesOn ^= 1;
+    boxes.forEach(box =>  {
+        box.classList.toggle("boxBorder");
+    })
 });
+
+const eraser = document.querySelector(".eraser")
+eraser.addEventListener("click", () => {
+    eraser.classList.toggle("buttonActive");
+    eraserOn ^= 1;
+})
+
+
+
+    
+
+
+
 
    

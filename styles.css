@@ -55,16 +55,7 @@ h1 {
     width: 240px;
 }
 
-button {
-    display: block;
-    padding: 8px 30px;
-    border: 1px solid rgb(62, 166, 255);
-}
 
-
-.buttonActive {
-    background-color: rgb(62, 166, 255);
-}
 
 .settings * {
     width: 100%;
@@ -126,3 +117,17 @@ input[type="color"]::-webkit-color-swatch {
     flex: auto;
 }
 
+.buttonActive {
+    background-color: rgb(62, 166, 255);
+    color: black;
+}
+
+button {
+    display: block;
+    padding: 8px 30px;
+    border: 1px solid rgb(62, 166, 255);
+}
+
+button:hover {
+    transform: scale(1.1);
+}
