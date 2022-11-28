@@ -1,5 +1,7 @@
 const grid = document.querySelector(".grid");
 let boxes;
+const coloredBoxes = [];
+let penColor = "black";
 
 function createGrid(sideLength) 
 {
@@ -25,14 +27,14 @@ function createGrid(sideLength)
     boxes.forEach(element => {
         element.addEventListener("mouseover", (e) => {
             // Checks that left mouse button is down
-            if (e.buttons === 1) e.target.style.backgroundColor = "black";
+            if (e.buttons === 1) e.target.style.backgroundColor = penColor;
         });
         element.addEventListener("dragstart", e => {
             // Stops the drag function
             e.preventDefault();
         });
         element.addEventListener("mousedown", (e) => {
-            if (e.buttons === 1) e.target.style.backgroundColor = "black"
+            if (e.buttons === 1) e.target.style.backgroundColor = penColor;
         })
     });  
       
@@ -53,8 +55,16 @@ const backgroundColor = document.querySelector(".backgroundColor");
 backgroundColor.addEventListener("input", e => grid.style.backgroundColor = e.target.value);
 
 const clear = document.querySelector(".clear");
-// clear.addEventListener("click", e => )
+clear.addEventListener("click", () => {
+    boxes.forEach(box => box.style.backgroundColor = "");
+})
 
-const penColor = document.querySelector(".penColor");
+const penColorSelect = document.querySelector(".penColor");
+penColorSelect.addEventListener("input", e => penColor = e.target.value);
+
+const gridLines = document.querySelector(".lines")
+gridLines = document.addEventListener("click", e => {
+    
+})
 
    
