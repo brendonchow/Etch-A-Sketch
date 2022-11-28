@@ -5,14 +5,15 @@
 }
 
 .box {
-	border-color: grey;
-	border-style: solid;
-	border-top-width: 0px;
-	border-bottom-width: 1px;
-	border-right-width: 1px;
-	border-left-width: 0;
  	display: inline-block;
     flex: auto;
+    border-color: grey;
+    user-select: none;
+}
+
+.boxBorder {
+    border-style: solid;
+    border-width: 0 1px 1px 0;
 }
 
 body{
@@ -28,7 +29,6 @@ body{
     height: 600px;
     display: flex;
     flex-direction: column;
-    background-color: white;
 }
 
 .gridEdge {
@@ -45,7 +45,8 @@ h1 {
 
 .main {
 	display: flex;
-	justify-content: space-evenly;
+	justify-content: center;
+    gap: 100px;
 }
 
 .settings {
