@@ -1,68 +1,68 @@
 * {
-	overflow: hidden;
-    color: rgb(62, 166, 255);
-    font-size: 15px;
+overflow: hidden;
+color: rgb(62, 166, 255);
+font-size: 15px;
 }
 
 .box {
- 	display: inline-block;
-    flex: auto;
-    border-color: grey;
-    user-select: none;
+	display: inline-block;
+	flex: auto;
+	border-color: grey;
+	user-select: none;
 }
 
 .boxBorder {
-    border-style: solid;
-    border-width: 0 1px 1px 0;
+	border-style: solid;
+	border-width: 0 1px 1px 0;
 }
 
 body{
 	min-height: 100vh;
 	margin: 0;
 	overflow: hidden;
-    background-color: #181818;
+	background-color: #181818;
 }
 
 .grid {
-	border-radius: 5px;
-    width: 600px;
-    height: 600px;
-    display: flex;
-    flex-direction: column;
+border-radius: 5px;
+	width: 600px;
+	height: 600px;
+	display: flex;
+	flex-direction: column;
 }
 
 .gridEdge {
-    background-color: #202020;
-    padding: 30px;
+	background-color: #202020;
+	padding: 30px;
 }
 
 h1 {
-	text-align: center;
-	margin: 50px 0 60px;
-    color: rgb(62, 166, 255);
-    font-size: 50px;
+text-align: center;
+margin: 50px 0 60px;
+	color: rgb(62, 166, 255);
+	font-size: 50px;
 }
 
 .main {
-	display: flex;
-	justify-content: center;
-    gap: 100px;
+display: flex;
+justify-content: center;
+	gap: 100px;
 }
 
 .settings {
-	background-color: #202020;
-	padding: 30px;
-    width: 240px;
+background-color: #202020;
+padding: 30px;
+	width: 240px;
 }
 
 
 
 .settings * {
-    width: 100%;
-    margin-bottom: 10px;
-    border-radius: 3px;
-    background-color: #202020;
-    font-weight: 500;
+	width: 100%;
+	margin-bottom: 10px;
+	border-radius: 3px;
+	background-color: #202020;
+	font-weight: 500;
 
 }
 
@@ -70,64 +70,64 @@ h1 {
 .grabber,
 .lighten,
 .lines{
-    margin-bottom: 30px;
+	margin-bottom: 30px;
 }
 
 input[type="color"] {
-    padding: 0;
-    border: 1px rgb(62, 166, 255) solid;
-    border-radius: 4px;
-    margin: 0px 10px 0px 0;
-    height: 40px;
-    width: 200px;
+	padding: 0;
+	border: 1px rgb(62, 166, 255) solid;
+	border-radius: 4px;
+	margin: 0px 10px 0px 0;
+	height: 40px;
+	width: 200px;
 }
 /* Removes the white spacing around the box */
 input[type="color"]::-webkit-color-swatch-wrapper {
-    padding: 0;
+	padding: 0;
 }
 
 /* Removes the white spacing around the box */
 input[type="color"]::-webkit-color-swatch {
-    border: none;
+	border: none;
 }
 
 .sliderValue {
-    font-size: 16px;
-    text-align: center;
-    margin: 0 0 10px;
+	font-size: 16px;
+	text-align: center;
+	margin: 0 0 10px;
 }
 
 .colorSelector, .backgroundSelector {
-    display: flex;
-    align-items: center;
+	display: flex;
+	align-items: center;
 }
 
 .slider {
-    margin: 0 0 10px;
+	margin: 0 0 10px;
 
 }
 
 .textColor {
-    font-size: 16px;
-    margin-bottom: 0;
+	font-size: 16px;
+	margin-bottom: 0;
 }
 
 .row {
-    display: flex;
-    flex: auto;
+	display: flex;
+	flex: auto;
 }
 
 .buttonActive {
-    background-color: rgb(62, 166, 255);
-    color: black;
+	background-color: rgb(62, 166, 255);
+	color: black;
 }
 
 button {
-    display: block;
-    padding: 8px 30px;
-    border: 1px solid rgb(62, 166, 255);
+	display: block;
+	padding: 8px 30px;
+	border: 1px solid rgb(62, 166, 255);
 }
 
 button:hover {
-    transform: scale(1.1);
+	transform: scale(1.1);
 }

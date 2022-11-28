@@ -1,10 +1,11 @@
 const grid = document.querySelector(".grid");
-grid.style.backgroundColor = "rgb(255,255,255)";
+grid.style.backgroundColor = "rgb(255, 255, 255)";
 let boxes;
-let penColor = "rgb(0,0,0)";
+let penColor = "rgb(0, 0, 0)";
+let penColorHexa = "#000000";
 let gridLinesOn = 1;
-const rainbowColors =   ["rgb(255,0,0)", "rgb(255,127,0)", "rgb(255,255,0)",
-                         "rgb(0,255,0)", "rgb(0,0,255)", "rgb(75,0,130)", "rgb(127,0,255)"];
+const rainbowColors =   ["rgb(255, 0, 0)", "rgb(255, 127, 0)", "rgb(255, 255, 0)",
+                         "rgb(0, 255, 0)", "rgb(0, 0, 255)", "rgb(75, 0, 130)", "rgb(127, 0, 255)"];
 
 const slider = document.querySelector(".slider");
 const sliderValue = document.querySelector(".sliderValue")
@@ -16,6 +17,11 @@ const rainbow = document.querySelector(".rainbow");
 const shading = document.querySelector(".shading");
 const eraser = document.querySelector(".eraser");
 const lighten = document.querySelector(".lighten");
+
+const fill = document.querySelector(".fill");
+let fillOn = 0;
+
+
 
 const modes = [[eraserFunc, eraser], [rainbowFunc, rainbow], [shadingFunc, shading], [lightenFunc, lighten], [defaultFunc]]
 
@@ -73,7 +79,22 @@ function rgbToDecimal(color, fn) {
 }
 
 function arrayToRGBA(color) {
-    return `rgb(${color[0]},${color[1]},${color[2]})`
+    return `rgb(${color[0]}, ${color[1]}, ${color[2]})`
+}
+
+function hexaToDecimal(color, fn) {
+    const rgb = [];
+    for (let i = 1; i < 7; i += 2) {
+        rgb.push(parseInt(color.substr(i, 2), 16));
+    }
+    return rgb.map(fn);
+}
+
+function rgbToHexa(rgb)
+{
+    console.log(rgb);
+    const decimal = rgbToDecimal(rgb, i => i.toString(16));
+    return "#" + decimal.join("");
 }
 
 function createGrid(sideLength) 
@@ -100,52 +121,68 @@ function createGrid(sideLength)
     boxes = document.querySelectorAll(".box");
 
     boxes.forEach(element => {
-        element.addEventListener("mouseover", (e) => {
-            // Checks that left mouse button is down
-            if (e.buttons === 1) modes[currentMode][0](e.target);
-        });
         element.addEventListener("mousedown", (e) => {
+            if (e.buttons === 1)
+            {
+                if (fillOn) {
+                    fillBackground(penColor);
+                    fill.classList.toggle("buttonActive");
+                    fillOn ^= 1;
+                }
+                else if (e.buttons === 1) modes[currentMode][0](e.target);
+            }
+        });        
+        element.addEventListener("mouseover", (e) => {
             if (e.buttons === 1) modes[currentMode][0](e.target);
-        })
+            // Checks that left mouse button is down
+        });
+
     });  
-      
 }
 
 createGrid(10);
+
+function fillBackground(rgb) {
+    
+    boxes.forEach(box => {
+        let boxColor = box.style.backgroundColor;
+        if (!boxColor || boxColor == grid.style.backgroundColor) {
+            box.style.backgroundColor = rgb;
+            box.setAttribute("color", rgb);
+        };
+    });
+    grid.style.backgroundColor = rgb;
+}
 
 slider.addEventListener("change", e => {
     sliderValue.textContent = `Grid size: ${e.target.value} x ${e.target.value}`;
     createGrid(e.target.value);
 });
 
-let count;
+let count = 0;
 // input event listener so color dynamically changes depending on cursor
-backgroundColor.addEventListener("input", e => {
-    const currentRgb = arrayToRGBA(hexaToDecimal(e.target.value, i => i));
-    grid.style.backgroundColor = currentRgb;
+backgroundColor.addEventListener("input", e => changeBackground(e.target.value));
+
+function changeBackground(e) {
+    // input gives us hexadecimal color values
+    const currentRgb = arrayToRGBA(hexaToDecimal(e, i => i));
+    
     count = 0;
     boxes.forEach(box => {
+        if (box.getAttribute("color") !== grid.style.backgroundColor) return;
         let shade = parseFloat(box.getAttribute("shade"));
         let newColor;
         if (shade <= 1) {
-            newColor = hexaToDecimal(e.target.value, i => i * shade);
+            newColor = hexaToDecimal(e, i => i * shade);
         } else {
-            newColor = hexaToDecimal(e.target.value, i => (255 - i) * (shade - 1) + i);
+            newColor = hexaToDecimal(e, i => (255 - i) * (shade - 1) + i);
         }
         newColor = arrayToRGBA(newColor);
         box.setAttribute("color", currentRgb);
-        box.style.backgroundColor = newColor;       
+        box.style.backgroundColor = newColor;
     });
-});
-
-function hexaToDecimal(color, fn) {
-    const rgb = [];
-    for (let i = 1; i < 7; i += 2) {
-        rgb.push(parseInt(color.substr(i, 2), 16));
-    }
-    return rgb.map(fn);
+    grid.style.backgroundColor = currentRgb;
 }
-
 
 clear.addEventListener("click", () => {
     boxes.forEach(box => {
@@ -155,7 +192,10 @@ clear.addEventListener("click", () => {
     });
 });
 
-penColorSelect.addEventListener("input", e => penColor = arrayToRGBA(hexaToDecimal(e.target.value, i => i)));
+penColorSelect.addEventListener("input", e => {
+    penColor = arrayToRGBA(hexaToDecimal(e.target.value, i => i));
+    penColorHexa = e.target.value;
+});
 
 gridLines.addEventListener("click", () => {
     gridLines.classList.toggle("buttonActive");
@@ -191,6 +231,12 @@ function toggleRadio(button, selfArrayIndex)
     }
     button.classList.toggle("buttonActive");
 }
+
+fill.addEventListener("click", () => {
+    fillOn ^= 1;
+    fill.classList.toggle("buttonActive");
+});
+
 
 
     
