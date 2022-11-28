@@ -4,6 +4,8 @@ let boxes;
 let penColor = "black";
 let gridLinesOn = 1;
 let eraserOn = 0;
+let rainbowOn = 0;
+const rainbowColors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
 
 function createGrid(sideLength) 
 {
@@ -28,8 +30,13 @@ function createGrid(sideLength)
     boxes = document.querySelectorAll(".box");
     function colorBox(box)
     {
-        if (!eraserOn) box.style.backgroundColor = penColor;
-        else box.style.backgroundColor = "";
+        if (eraserOn) box.style.backgroundColor = "";
+        else if (rainbowOn) {
+            //const rgb = Math.floor(Math.random() * 16777215);
+            //box.style.backgroundColor = `#${rgb}`;
+            box.style.backgroundColor = rainbowColors[Math.floor(Math.random() * 7)];
+        }
+        else box.style.backgroundColor = penColor;
     }
 
     boxes.forEach(element => {
@@ -82,6 +89,11 @@ eraser.addEventListener("click", () => {
     eraserOn ^= 1;
 })
 
+const rainbow = document.querySelector(".rainbow");
+rainbow.addEventListener("click", () => {
+    rainbow.classList.toggle("buttonActive");
+    rainbowOn ^= 1;
+})
 
 
     
