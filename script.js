@@ -177,7 +177,6 @@ function fillBackground(rgb) {
             box.setAttribute("color", rgb);
         };
     });
-    grid.style.backgroundColor = rgb;
 }
 
 slider.addEventListener("change", e => {
