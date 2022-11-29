@@ -1,8 +1,9 @@
+// Should have converted all color values to hexadecimal rather than rgb values
+
 const grid = document.querySelector(".grid");
 grid.style.backgroundColor = "rgb(255, 255, 255)";
 let boxes;
 let penColor = "rgb(0, 0, 0)";
-let penColorHexa = "#000000";
 let gridLinesOn = 1;
 const rainbowColors =   ["rgb(255, 0, 0)", "rgb(255, 127, 0)", "rgb(255, 255, 0)",
                          "rgb(0, 255, 0)", "rgb(0, 0, 255)", "rgb(75, 0, 130)", "rgb(127, 0, 255)"];
@@ -27,12 +28,13 @@ let grabberOn = 0;
 const modes = [[eraserFunc, eraser], [rainbowFunc, rainbow], [shadingFunc, shading], [lightenFunc, lighten], [defaultFunc]]
 
 let currentMode = 4;
-
-// Color stores the original color before any shading
-// Shade stores the level of shading/lighting where 0 <= shading < 1 and 1 < lighting <= 2
-// prev stores the shaded/lighten color before applying the opposite effect.
-// prev is used to ensure that starting from any rgb value regardless of whether it has been shaded/lightened, 
-// it will always be 10 pass to either white or black
+/*
+Color stores the original color before any shading
+Shade stores the level of shading/lighting where 0 <= shading < 1 and 1 < lighting <= 2
+prev stores the shaded/lighten color before applying the opposite effect.
+prev is used to ensure that starting from any rgb value regardless of whether it has been shaded/lightened, 
+it will always be 10 pass to either white or black
+*/
 function defaultFunc(box) {
     box.style.backgroundColor = penColor;
     box.setAttribute("color", penColor);
@@ -196,7 +198,6 @@ function changeBackground(e) {
         if (box.getAttribute("color") !== grid.style.backgroundColor) return;
         let shade = parseFloat(box.getAttribute("shade"));
         let newColor;
-        // TODO!
         if (shade <= 1) {
             newColor = hexaToDecimal(e, i => i * shade);
         } else {
@@ -220,7 +221,6 @@ clear.addEventListener("click", () => {
 
 penColorSelect.addEventListener("input", e => {
     penColor = arrayToRGBA(hexaToDecimal(e.target.value, i => i));
-    penColorHexa = e.target.value;
 });
 
 gridLines.addEventListener("click", () => {
