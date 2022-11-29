@@ -28,6 +28,11 @@ const modes = [[eraserFunc, eraser], [rainbowFunc, rainbow], [shadingFunc, shadi
 
 let currentMode = 4;
 
+// Color stores the original color before any shading
+// Shade stores the level of shading/lighting where 0 <= shading < 1 and 1 < lighting <= 2
+// prev stores the shaded/lighten color before applying the opposite effect.
+// prev is used to ensure that starting from any rgb value regardless of whether it has been shaded/lightened, 
+// it will always be 10 pass to either white or black
 function defaultFunc(box) {
     box.style.backgroundColor = penColor;
     box.setAttribute("color", penColor);
@@ -137,7 +142,6 @@ function createGrid(sideLength)
             {
                 if (fillOn) {
                     fillBackground(penColor);
-                    console.log(penColor)
                     fill.classList.toggle("buttonActive");
                     fillOn = 0;
                 }
