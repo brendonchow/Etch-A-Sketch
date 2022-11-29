@@ -213,9 +213,10 @@ function changeBackground(e) {
 
 clear.addEventListener("click", () => {
     boxes.forEach(box => {
-        box.style.removeProperty("background-color");
+        box.style.backgroundColor = grid.style.backgroundColor;
         box.setAttribute("color", grid.style.backgroundColor);
         box.setAttribute("shade", "1");
+        box.removeAttribute("prev");
     });
 });
 
