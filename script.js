@@ -49,30 +49,53 @@ function rainbowFunc(box) {
 
 function shadingFunc(box) {
     let shading = parseFloat(box.getAttribute("shade"));
-    box.removeAttribute("shade");
-    if (shading > 1) {
-        shading = 0.9;
-        box.setAttribute("color", box.style.backgroundColor);
-    } else shading -= 0.1;
+    if (box.getAttribute("mode") !== "light") {
+        let old = parseFloat(box.getAttribute("oldShade"))
+        if (old) {
+            shading -= old / 10;
+        }else {
+            shading = 0.9;
+            box.setAttribute("oldShade", "1");
+        };
+    } else {
+        if (shading < 0) {
+            box.setAttribute("oldShade", 0);
+            shading = 0.2;
+        }
+        else {
+            box.setAttribute("oldShade", shading);
+            shading *= 0.9;
+        };
+    }
     box.setAttribute("shade", shading);
     let newColor = rgbToDecimal(box.getAttribute("color"), i => parseInt(i) * shading);
-    box.style.background = arrayToRGBA(newColor);    
+    box.style.background = arrayToRGBA(newColor); 
+    box.setAttribute("mode", "shade");  
 }
 
 function lightenFunc(box) {
     let shading = parseFloat(box.getAttribute("shade"));
-    box.removeAttribute("shade");
-    if (shading < 1) {
-        shading = 1.1;
-        box.setAttribute("color", box.style.backgroundColor);
-    } else shading += 0.1;
-    box.setAttribute("shade", shading);
 
-    let newColor = rgbToDecimal(box.getAttribute("color"), i => {
-        i = parseInt(i);
-        return (255 - i) * (shading - 1) + i;
-    });
+    if (box.getAttribute("mode") !== "shade") {
+        const old = parseFloat(box.getAttribute("oldShade"));
+        if (old) shading += (2 - old) / 10;
+        else {
+            shading = 1.1;
+            box.setAttribute("oldShade", "1");
+        };
+    } else {
+        if (shading > 2) {
+            box.setAttribute("oldShade", 2);
+            shading = 1.8;
+        } else {
+            box.setAttribute("oldShade", shading)
+            shading *= 1.1;
+        };
+    }
+    box.setAttribute("shade", shading);
+    let newColor = rgbToDecimal(box.getAttribute("color"), i => parseInt(i) * shading);
     box.style.background = arrayToRGBA(newColor);
+    box.setAttribute("mode", "light") 
 }
 
 function rgbToDecimal(color, fn) {
@@ -93,12 +116,10 @@ function hexaToDecimal(color, fn) {
 
 function rgbToHexa(rgb)
 {
-    console.log(rgb)
     const decimal = rgbToDecimal(rgb, i => {
         let decimalString = parseInt(i).toString(16).trim();
         return (decimalString.length === 1) ? "0" + decimalString : decimalString;
     });
-    console.log(decimal);
     return "#" + decimal.join("");
 }
 
@@ -114,7 +135,7 @@ function createGrid(sideLength)
         {
             box = document.createElement("div");
             box.classList.add("box");
-            box.setAttribute("shade", 1);
+            box.setAttribute("shade", "1");
             box.setAttribute("color", grid.style.backgroundColor);
             box.style.backgroundColor = grid.style.backgroundColor;
             if (gridLinesOn) box.classList.add("boxBorder");
@@ -132,13 +153,16 @@ function createGrid(sideLength)
             {
                 if (fillOn) {
                     fillBackground(penColor);
+                    console.log(penColor)
                     fill.classList.toggle("buttonActive");
                     fillOn = 0;
                 }
                 else if (grabberOn) {
                     let newColor = rgbToHexa(e.target.style.backgroundColor);
                     if (newColor == "#") newColor = "#ffffff";
+                    console.log(newColor);
                     penColorSelect.value = newColor;
+                    penColor = e.target.style.backgroundColor;
                     grabber.classList.toggle("buttonActive");
                     grabberOn = 0;
                 }
@@ -156,7 +180,6 @@ function createGrid(sideLength)
 createGrid(10);
 
 function fillBackground(rgb) {
-    
     boxes.forEach(box => {
         let boxColor = box.style.backgroundColor;
         if (!boxColor || boxColor == grid.style.backgroundColor) {
