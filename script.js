@@ -32,12 +32,14 @@ function defaultFunc(box) {
     box.style.backgroundColor = penColor;
     box.setAttribute("color", penColor);
     box.setAttribute("shade", "1");
+    box.removeAttribute("prev");
 }
 
 function eraserFunc(box) {
     box.style.removeProperty("background-color");
     box.setAttribute("color", grid.style.backgroundColor);
     box.setAttribute("shade", "1");
+    box.removeAttribute("prev");
 }
 
 function rainbowFunc(box) {
@@ -45,57 +47,39 @@ function rainbowFunc(box) {
     box.style.backgroundColor = newColor;
     box.setAttribute("color", newColor);
     box.setAttribute("shade", "1");
+    box.removeAttribute("prev");
 }
 
 function shadingFunc(box) {
     let shading = parseFloat(box.getAttribute("shade"));
-    if (box.getAttribute("mode") !== "light") {
-        let old = parseFloat(box.getAttribute("oldShade"))
-        if (old) {
-            shading -= old / 10;
-        }else {
-            shading = 0.9;
-            box.setAttribute("oldShade", "1");
-        };
+
+    if (shading >= 1){
+        shading = 0.9;
+        box.setAttribute("prev", box.style.backgroundColor);
     } else {
-        if (shading < 0) {
-            box.setAttribute("oldShade", 0);
-            shading = 0.2;
-        }
-        else {
-            box.setAttribute("oldShade", shading);
-            shading *= 0.9;
-        };
+        shading = (shading <= 0) ? 0 : shading - 0.1;
     }
     box.setAttribute("shade", shading);
-    let newColor = rgbToDecimal(box.getAttribute("color"), i => parseInt(i) * shading);
+    let newColor = rgbToDecimal(box.getAttribute("prev"), i => parseInt(i) * shading);
     box.style.background = arrayToRGBA(newColor); 
-    box.setAttribute("mode", "shade");  
 }
 
 function lightenFunc(box) {
     let shading = parseFloat(box.getAttribute("shade"));
 
-    if (box.getAttribute("mode") !== "shade") {
-        const old = parseFloat(box.getAttribute("oldShade"));
-        if (old) shading += (2 - old) / 10;
-        else {
-            shading = 1.1;
-            box.setAttribute("oldShade", "1");
-        };
+    if (shading <= 1){
+        shading = 1.1;
+        box.setAttribute("prev", box.style.backgroundColor);
     } else {
-        if (shading > 2) {
-            box.setAttribute("oldShade", 2);
-            shading = 1.8;
-        } else {
-            box.setAttribute("oldShade", shading)
-            shading *= 1.1;
-        };
+        shading = (shading >= 2) ? 2 : shading + 0.1;
     }
+
     box.setAttribute("shade", shading);
-    let newColor = rgbToDecimal(box.getAttribute("color"), i => parseInt(i) * shading);
+    let newColor = rgbToDecimal(box.getAttribute("prev"), i => {
+        i = parseInt(i);
+        return (255 - i) * (shading - 1) + i;
+    });
     box.style.background = arrayToRGBA(newColor);
-    box.setAttribute("mode", "light") 
 }
 
 function rgbToDecimal(color, fn) {
@@ -158,11 +142,10 @@ function createGrid(sideLength)
                     fillOn = 0;
                 }
                 else if (grabberOn) {
+                    penColor = e.target.style.backgroundColor;
                     let newColor = rgbToHexa(e.target.style.backgroundColor);
                     if (newColor == "#") newColor = "#ffffff";
-                    console.log(newColor);
                     penColorSelect.value = newColor;
-                    penColor = e.target.style.backgroundColor;
                     grabber.classList.toggle("buttonActive");
                     grabberOn = 0;
                 }
@@ -181,8 +164,9 @@ createGrid(10);
 
 function fillBackground(rgb) {
     boxes.forEach(box => {
+        // CHECK
         let boxColor = box.style.backgroundColor;
-        if (!boxColor || boxColor == grid.style.backgroundColor) {
+        if (boxColor == grid.style.backgroundColor) {
             box.style.backgroundColor = rgb;
             box.setAttribute("color", rgb);
         };
@@ -208,6 +192,7 @@ function changeBackground(e) {
         if (box.getAttribute("color") !== grid.style.backgroundColor) return;
         let shade = parseFloat(box.getAttribute("shade"));
         let newColor;
+        // TODO!
         if (shade <= 1) {
             newColor = hexaToDecimal(e, i => i * shade);
         } else {
@@ -216,6 +201,7 @@ function changeBackground(e) {
         newColor = arrayToRGBA(newColor);
         box.setAttribute("color", currentRgb);
         box.style.backgroundColor = newColor;
+        box.setAttribute("prev", currentRgb);
     });
     grid.style.backgroundColor = currentRgb;
 }
