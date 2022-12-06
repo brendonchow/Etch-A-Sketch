@@ -4,7 +4,7 @@ const grid = document.querySelector(".grid");
 grid.style.backgroundColor = "rgb(255, 255, 255)";
 let boxes;
 let penColor = "rgb(0, 0, 0)";
-let gridLinesOn = 1;
+let gridLinesOn = true;
 const rainbowColors =   ["rgb(255, 0, 0)", "rgb(255, 127, 0)", "rgb(255, 255, 0)",
                          "rgb(0, 255, 0)", "rgb(0, 0, 255)", "rgb(75, 0, 130)", "rgb(127, 0, 255)"];
 
@@ -20,10 +20,10 @@ const eraser = document.querySelector(".eraser");
 const lighten = document.querySelector(".lighten");
 
 const fill = document.querySelector(".fill");
-let fillOn = 0;
+let fillOn = false;
 
 const grabber = document.querySelector(".grabber");
-let grabberOn = 0;
+let grabberOn = false;
 
 const modes = [[eraserFunc, eraser], [rainbowFunc, rainbow], [shadingFunc, shading], [lightenFunc, lighten], [defaultFunc]]
 
@@ -129,9 +129,7 @@ function createGrid(sideLength)
             box.setAttribute("shade", "1");
             box.setAttribute("color", grid.style.backgroundColor);
             box.style.backgroundColor = grid.style.backgroundColor;
-            if (gridLinesOn) box.classList.add("boxBorder");
-            if (j === 0) box.style.borderLeftWidth = "1px";
-            if (i === 0) box.style.borderTopWidth = "1px";         
+            if (!gridLinesOn) box.classList.add("boxLinesOff");        
             line.appendChild(box);
         }
         grid.appendChild(line);       
@@ -171,10 +169,8 @@ createGrid(10);
 function fillBackground(rgb) {
     boxes.forEach(box => {
         // CHECK
-        let boxColor = box.style.backgroundColor;
-        if (boxColor == grid.style.backgroundColor) {
+        if (box.getAttribute("color") == grid.style.backgroundColor) {
             box.style.backgroundColor = rgb;
-            box.setAttribute("color", rgb);
         };
     });
 }
@@ -225,8 +221,9 @@ penColorSelect.addEventListener("input", e => {
 
 gridLines.addEventListener("click", () => {
     gridLines.classList.toggle("buttonActive");
+    gridLinesOn ^= 1;
     boxes.forEach(box =>  {
-        box.classList.toggle("boxBorder");
+        box.classList.toggle("boxLinesOff");
     });
 });
 
@@ -265,13 +262,13 @@ grabber.addEventListener("click", () => turnGrabber(grabber, fill))
 function turnGrabber(grabber, fill) {
     grabberOn ^= 1;
     grabber.classList.toggle("buttonActive");
-    if (grabberOn === 1 && fillOn === 1) turnFill(fill, grabber);
+    if (grabberOn == true && fillOn == true) turnFill(fill, grabber);
 }
 
 function turnFill(fill, grabber) {
     fillOn ^= 1;
     fill.classList.toggle("buttonActive");
-    if (grabberOn === 1 && fillOn === 1) turnGrabber(grabber, fill);
+    if (grabberOn == true && fillOn == true) turnGrabber(grabber, fill);
 }
 
 
