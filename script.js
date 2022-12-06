@@ -171,6 +171,7 @@ function fillBackground(rgb) {
         // CHECK
         if (box.getAttribute("color") == grid.style.backgroundColor) {
             box.style.backgroundColor = rgb;
+            box.setAttribute("shade", "1");
         };
     });
 }
